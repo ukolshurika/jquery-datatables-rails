@@ -2681,8 +2681,8 @@
 		var language = settings.oLanguage;
 		var previousSearch = settings.oPreviousSearch;
 		var features = settings.aanFeatures;
-		var input = $(settings.oWrappers.sFilterWrapper).append('<input type="search" class="'+classes.sFilterInput+'"/>';
-		$(settings.oWrappers.sFilterWrapper).append(settings.oWrappers.sFilterInputAfter)
+		var input = '<input type="search" class="'+classes.sFilterInput+'"/>';
+		var label = settings.oWrappers.sFilterWrapper || '<label/>'
 
 		var str = language.sSearch;
 		str = str.match(/_INPUT_/) ?
@@ -2693,7 +2693,7 @@
 				'id': ! features.f ? tableId+'_filter' : null,
 				'class': classes.sFilter
 			} )
-			.append( $('<label/>' ).append( str ) );
+			.append( $("<div class ='form-group pull-right col-md-3'/>").append( $("<div class ='input-group'/>").append( input ).append(settings.oWrappers.sFilterInputAfter) ) ).append("<div class='clearfix'/>");
 	
 		var searchFn = function() {
 			/* Update all other filter input elements for the new display */
@@ -3326,7 +3326,7 @@
 		if ( ! settings.aanFeatures.l ) {
 			div[0].id = tableId+'_length';
 		}
-	
+
 		div.children().append(
 			settings.oLanguage.sLengthMenu.replace( '_MENU_', select[0].outerHTML )
 		);
@@ -6026,6 +6026,7 @@
 			
 			/* Check to see if we are re-initialising a table */
 			var allSettings = DataTable.settings;
+
 			for ( i=0, iLen=allSettings.length ; i<iLen ; i++ )
 			{
 				/* Base check on table node */
@@ -6151,6 +6152,7 @@
 				[ "bScrollCollapse", "bCollapse" ]
 			] );
 			_fnMap( oSettings.oLanguage, oInit, "fnInfoCallback" );
+			_fnMap( oSettings.oWrappers, oInit.oWrappers, ["sFilterWrapper", "sFilterInputAfter"] );
 			
 			/* Callback functions which are array driven */
 			_fnCallbackReg( oSettings, 'aoDrawCallback',       oInit.fnDrawCallback,      'user' );
@@ -6166,7 +6168,7 @@
 			_fnCallbackReg( oSettings, 'aoPreDrawCallback',    oInit.fnPreDrawCallback,   'user' );
 			
 			var oClasses = oSettings.oClasses;
-			
+
 			// @todo Remove in 1.11
 			if ( oInit.bJQueryUI )
 			{
@@ -13224,7 +13226,12 @@
 		 *  @default {}
 		 */
 		"oClasses": {},
-	
+
+			/**
+		 * Wrappers
+		 */
+		"oWrappers": {},
+
 		/**
 		 * Flag attached to the settings object so you can check in the draw
 		 * callback if filtering has been done in the draw. Deprecated in favour of
